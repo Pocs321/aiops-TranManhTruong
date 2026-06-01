@@ -64,7 +64,7 @@ residual**; detector ML là **Isolation Forest trên các feature thời gian đ
 ## Phase 2 — Các Detector
 
 > Nhãn NAB là các **cửa sổ** 4 ngày (~10% tổng số điểm), trong khi detector flag những
-> điểm lệch sắc nhọn. Nên **recall theo điểm vốn dĩ thấp** — vì vậy tôi báo cáo thêm
+> điểm lệch sắc nhọn. Nên **recall theo điểm vốn dĩ thấp** — vì vậy báo cáo thêm
 > **mức phát hiện theo sự kiện** (bao nhiêu trong 5 sự kiện đã biết có ≥1 flag).
 
 ### Baseline (lý do) — global 3σ thất bại
