@@ -6,7 +6,7 @@ ground-truth** (5 sự kiện: NYC Marathon, Lễ Tạ ơn, Giáng sinh, Năm m�
 tháng 1) và có seasonality ngày + tuần mạnh — hoàn hảo để cho thấy vì sao detector
 statistical hiểu seasonal thắng 3σ ngây thơ.
 
-- Notebook: [`assignment.ipynb`](assignment.ipynb) (bản mirror nguồn: `assignment.py`)
+- Notebook: [`assignment.ipynb`](assignment.ipynb) 
 - Artifact model: [`models/isolation_forest.joblib`](models/isolation_forest.joblib) — **764 KB** (< 1 MB ✓)
 - Hình: `figures/01..09_*.png`
 
