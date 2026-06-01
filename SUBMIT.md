@@ -239,10 +239,3 @@ Thêm feature thời gian/ngữ cảnh giúp IF đánh giá **độ lệch so v�
 
 ---
 
-## Cách reproduce
-```powershell
-python -m pip install numpy pandas scipy scikit-learn statsmodels matplotlib joblib jupytext
-# data đã có sẵn trong data/ ; để chạy lại end-to-end:
-python -m jupytext --to notebook assignment.py -o assignment.ipynb
-python -m jupyter nbconvert --to notebook --execute --inplace assignment.ipynb
-```
