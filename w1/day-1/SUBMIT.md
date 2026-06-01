@@ -1,4 +1,4 @@
-# W1-D1 — Phát hiện Anomaly trên Metric — Bài nộp
+# W1-D1: Metric Anomaly Detection
 
 **Dataset:** NAB `realKnownCause/nyc_taxi.csv` — nhu cầu taxi NYC, lấy mẫu mỗi 30 phút,
 2014-07-01 → 2015-01-31 (10,320 điểm). Chọn vì có sẵn **cửa sổ anomaly gán nhãn
