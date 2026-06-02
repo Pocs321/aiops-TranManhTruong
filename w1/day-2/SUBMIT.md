@@ -1,4 +1,4 @@
-# SUBMIT — W1-D2: Log Mining + Parsing + Anomaly từ Log
+# W1-D2: Log Mining + Parsing + Anomaly từ Log
 
 > Toàn bộ số liệu dưới đây sinh ra từ `assignment.ipynb` (đã chạy end-to-end) và
 > `log_analyzer.py`. Tái lập: `python build_notebook.py`.
