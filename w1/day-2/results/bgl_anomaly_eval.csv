@@ -1,3 +1,0 @@
-detector,precision,recall,f1,flagged
-3-sigma,0.548,1.0,0.708,31
-IsolationForest,0.706,0.706,0.706,17
