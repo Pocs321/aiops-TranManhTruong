@@ -199,4 +199,3 @@ chỉ cần trỏ `log_analyzer.py` / notebook vào HDFS_v1 đầy đủ (11M d�
 ra precision/recall ở quy mô thật. Có thể nâng cấp embedding sang sentence-transformers để
 hiểu ngữ nghĩa (`timeout` ~ `refused`) thay vì chỉ từ vựng như TF-IDF.
 
-> Trả lời 5 câu **Knowledge Check** ở `KNOWLEDGE_CHECK.md`.
