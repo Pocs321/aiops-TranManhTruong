@@ -19,7 +19,7 @@ Nạp cột `Content` (đúng phần ground-truth được tạo ra) để đo G
 HDFS_2k.log: 2,000 dòng log thô
 Số template ground-truth (EventId): 14
 Drain3 tìm được 16 template (ground-truth: 14)
-Grouping Accuracy = 0.9975   (KPI mục tiêu > 0.85)   ✅
+Grouping Accuracy = 0.9975   (KPI mục tiêu > 0.85)   
 ```
 
 ### Top-10 template (→ `results/top_templates.csv`)
@@ -163,10 +163,10 @@ NEW TEMPLATES (first seen in the most-recent window)
 
 | KPI | Mục tiêu | Đạt được |
 |---|---|---|
-| Parsing accuracy (Grouping Accuracy) | > 0.85 | HDFS **0.9975**, BGL 0.9685, Spark 0.9075 ✅ |
-| Template count / dataset | hợp lý, không quá ít/nhiều | 14 / 82 / 29 (raw) — hợp lý ✅ |
-| Anomaly detection F1 (BGL có nhãn) | định lượng được | 3σ 0.708 · IForest 0.706 ✅ |
-| Cross-signal TTD | < 5 phút | tức thì (demo) ✅ |
+| Parsing accuracy (Grouping Accuracy) | > 0.85 | HDFS **0.9975**, BGL 0.9685, Spark 0.9075 |
+| Template count / dataset | hợp lý, không quá ít/nhiều | 14 / 82 / 29 (raw) — hợp lý |
+| Anomaly detection F1 (BGL có nhãn) | định lượng được | 3σ 0.708 · IForest 0.706 |
+| Cross-signal TTD | < 5 phút | tức thì (demo) |
 
 ---
 
