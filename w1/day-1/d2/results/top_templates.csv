@@ -1,0 +1,11 @@
+template_id,template,count
+2,BLOCK* NameSystem.addStoredBlock: blockMap updated: <IP> is added to <BLK> size <NUM>,314
+1,PacketResponder <NUM> for block <BLK> terminating,311
+3,Received block <BLK> of size <NUM> from /<IP>,292
+4,Receiving block <BLK> src: /<IP> dest: /<IP>,292
+7,Deleting block <BLK> file <*>,263
+10,BLOCK* NameSystem.delete: <BLK> is added to invalidSet of <IP>,224
+5,BLOCK* NameSystem.allocateBlock: <*> <BLK>,115
+8,<IP> Served block <BLK> to /<IP>,80
+9,<IP>:Got exception while serving <BLK> to /<IP>:,80
+6,Verification succeeded for <BLK>,20
