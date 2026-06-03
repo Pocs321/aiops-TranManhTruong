@@ -1,12 +1,5 @@
 # SUBMIT — W1-D3: Data Layer Architecture + Observability Pipeline
 
-
-| Deliverable | File | Chạy được? |
-|---|---|---|
-| Mock streaming pipeline | [`pipeline.py`](pipeline.py) → `features.parquet` (248.6 KB) + `features.json` |`uv run python pipeline.py` |
-| Architecture E2E | [`architecture.md`](architecture.md) + [`architecture.png`](architecture.png) (gen bởi `gen_architecture.py`) |
-| Cost model 3 tier | [`cost_model.py`](cost_model.py) |`uv run python cost_model.py` |
-
 ---
 
 ## Phase 1 — Streaming pipeline + Architecture
