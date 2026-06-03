@@ -174,19 +174,3 @@ build bắt đầu thắng ($21K vs $32K) — đó là điểm để bấm nút.
 
 ---
 
-## Reproduce
-
-```powershell
-# từ thư mục d3/ (đã có pyproject.toml; uv tự tạo .venv + cài deps lần đầu)
-uv run python pipeline.py          # -> features.parquet + features.json + bảng anomaly
-uv run python cost_model.py        # -> bảng cost 3 tier, build vs buy
-uv run python gen_architecture.py  # -> architecture.png
-```
-
-| KPI bài | Mục tiêu | Đạt |
-|---|---|---|
-| Pipeline chạy được | `uv run python pipeline.py` | ✅ exit 0, ghi `features.parquet` |
-| Feature streaming | rolling mean + rate of change | ✅ + `z_score`, `ewma`, bắt onset+recovery |
-| Architecture E2E | 6 stage + tool cụ thể | ✅ `architecture.png` + `.md` (mermaid) |
-| Cost 3 tier | breakdown + build vs buy | ✅ Small/Medium/Large, per-component |
-| ADR | Nygard, ≥200 từ, định lượng | ✅ Loki vs ES, ~8× cost, latency số |
