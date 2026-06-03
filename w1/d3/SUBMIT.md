@@ -1,16 +1,11 @@
 # SUBMIT — W1-D3: Data Layer Architecture + Observability Pipeline
 
-> Mọi số liệu dưới đây sinh trực tiếp từ code trong repo. Tái lập:
-> `uv run python pipeline.py` · `uv run python cost_model.py` · `uv run python gen_architecture.py`.
-> **Use case xuyên suốt:** *anomaly detection trên payment-service* (nối tiếp metric ở W1-D1
-> và log ở W1-D2).
 
 | Deliverable | File | Chạy được? |
 |---|---|---|
 | Mock streaming pipeline | [`pipeline.py`](pipeline.py) → `features.parquet` (248.6 KB) + `features.json` |`uv run python pipeline.py` |
 | Architecture E2E | [`architecture.md`](architecture.md) + [`architecture.png`](architecture.png) (gen bởi `gen_architecture.py`) |
 | Cost model 3 tier | [`cost_model.py`](cost_model.py) |`uv run python cost_model.py` |
-| ADR | [`ADR-001.md`](ADR-001.md) — Loki vs Elasticsearch |
 
 ---
 
