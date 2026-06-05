@@ -1,0 +1,2 @@
+{"timestamp": "2026-06-05T13:19:23.739+00:00", "type": "traffic_spike", "severity": "warning", "message": "Traffic at 503 req/s (3.0x baseline, queue=40, p99=449ms) \u2014 load surge"}
+{"timestamp": "2026-06-05T13:19:33.823+00:00", "type": "traffic_spike", "severity": "critical", "message": "Traffic at 682 req/s (4.1x baseline, queue=105, p99=641ms) \u2014 load surge"}
