@@ -1,0 +1,117 @@
+{
+  "input_alerts": 20,
+  "output_clusters": 4,
+  "reduction_ratio": 0.8,
+  "clusters": [
+    {
+      "cluster_id": "c-000-000",
+      "alert_count": 14,
+      "unique_alert_types": 11,
+      "services": [
+        "cart-redis",
+        "cart-svc",
+        "checkout-svc",
+        "edge-lb",
+        "payment-svc",
+        "payments-db"
+      ],
+      "alert_ids": [
+        "a001",
+        "a004",
+        "a005",
+        "a006",
+        "a002",
+        "a003",
+        "a007",
+        "a008",
+        "a009",
+        "a010",
+        "a011",
+        "a012",
+        "a013",
+        "a014"
+      ],
+      "time_range": [
+        "2026-06-12T09:42:01Z",
+        "2026-06-12T09:44:35Z"
+      ],
+      "max_severity": "crit",
+      "fingerprints": [
+        "cart-redis|evicted_keys|crit",
+        "cart-svc|latency_p99_ms|warn",
+        "checkout-svc|http_5xx_ratio|crit",
+        "checkout-svc|latency_p99_ms|crit",
+        "edge-lb|http_5xx_ratio|crit",
+        "edge-lb|latency_p99_ms|warn",
+        "payment-svc|db_connection_count|crit",
+        "payment-svc|db_pool_used_ratio|warn",
+        "payment-svc|error_rate|crit",
+        "payment-svc|latency_p99_ms|crit",
+        "payments-db|cpu_pct|crit"
+      ]
+    },
+    {
+      "cluster_id": "c-000-001",
+      "alert_count": 3,
+      "unique_alert_types": 2,
+      "services": [
+        "recommender-svc"
+      ],
+      "alert_ids": [
+        "a015",
+        "a016",
+        "a017"
+      ],
+      "time_range": [
+        "2026-06-12T09:45:00Z",
+        "2026-06-12T09:46:00Z"
+      ],
+      "max_severity": "crit",
+      "fingerprints": [
+        "recommender-svc|gc_pause_ms|warn",
+        "recommender-svc|memory_used_ratio|crit"
+      ]
+    },
+    {
+      "cluster_id": "c-000-002",
+      "alert_count": 2,
+      "unique_alert_types": 2,
+      "services": [
+        "search-es",
+        "search-svc"
+      ],
+      "alert_ids": [
+        "a018",
+        "a019"
+      ],
+      "time_range": [
+        "2026-06-12T09:47:00Z",
+        "2026-06-12T09:47:20Z"
+      ],
+      "max_severity": "warn",
+      "fingerprints": [
+        "search-es|query_latency_ms|warn",
+        "search-svc|latency_p99_ms|warn"
+      ]
+    },
+    {
+      "cluster_id": "c-001-000",
+      "alert_count": 1,
+      "unique_alert_types": 1,
+      "services": [
+        "notification-svc"
+      ],
+      "alert_ids": [
+        "a020"
+      ],
+      "time_range": [
+        "2026-06-12T10:05:00Z",
+        "2026-06-12T10:05:00Z"
+      ],
+      "max_severity": "warn",
+      "fingerprints": [
+        "notification-svc|queue_lag_msgs|warn"
+      ]
+    }
+  ]
+}

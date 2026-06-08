@@ -1,0 +1,31 @@
+{
+  "_comment": "Service dependency graph cho W2-D1 lab. Edge A->B nghĩa là A GỌI B (A depends on B). RCA traverse NGƯỢC edge (từ symptom về phía callee) để tìm root cause.",
+  "services": [
+    { "name": "edge-lb",          "team": "platform",  "tier": "edge"    },
+    { "name": "checkout-svc",     "team": "checkout",  "tier": "frontend"},
+    { "name": "payment-svc",      "team": "payments",  "tier": "core"    },
+    { "name": "cart-svc",         "team": "checkout",  "tier": "core"    },
+    { "name": "inventory-svc",    "team": "catalog",   "tier": "core"    },
+    { "name": "recommender-svc",  "team": "ml",        "tier": "async"   },
+    { "name": "search-svc",       "team": "discovery", "tier": "core"    },
+    { "name": "notification-svc", "team": "growth",    "tier": "async"   }
+  ],
+  "stores": [
+    { "name": "payments-db",  "kind": "postgres"     },
+    { "name": "cart-redis",   "kind": "redis"        },
+    { "name": "search-es",    "kind": "elasticsearch"},
+    { "name": "model-store",  "kind": "s3"           },
+    { "name": "notif-queue",  "kind": "sqs"          }
+  ],
+  "edges": [
+    { "from": "edge-lb",          "to": "checkout-svc",  "type": "http"  },
+    { "from": "checkout-svc",     "to": "payment-svc",   "type": "http"  },
+    { "from": "checkout-svc",     "to": "cart-svc",      "type": "http"  },
+    { "from": "checkout-svc",     "to": "inventory-svc", "type": "http"  },
+    { "from": "payment-svc",      "to": "payments-db",   "type": "sql"   },
+    { "from": "cart-svc",         "to": "cart-redis",    "type": "redis" },
+    { "from": "search-svc",       "to": "search-es",     "type": "es"    },
+    { "from": "recommender-svc",  "to": "model-store",   "type": "s3"    },
+    { "from": "notification-svc", "to": "notif-queue",   "type": "sqs"   }
+  ]
+}
