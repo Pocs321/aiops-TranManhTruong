@@ -1,0 +1,119 @@
+{
+  "generated_by": "w2-d2-rca",
+  "clusters_analyzed": 3,
+  "llm_used": false,
+  "results": [
+    {
+      "cluster_id": "c-001-000",
+      "graph_top3": [
+        [
+          "payment-svc",
+          1.0
+        ],
+        [
+          "checkout-svc",
+          0.5404
+        ],
+        [
+          "cart-svc",
+          0.5073
+        ]
+      ],
+      "root_cause": "payment-svc",
+      "class": "connection_pool_exhaustion",
+      "confidence": 0.9,
+      "actions": [
+        "Rolled back payment-svc to v3.1 and raised HikariCP pool 50 -> 120."
+      ],
+      "reasoning": "payment-svc is the most-depended-on service in the cluster and alerts earliest, so the cascade originates there. Past incident INC-2026-05-30 (connection_pool_exhaustion) on payment-svc is the closest match (similarity 1.0).",
+      "similar_incidents": [
+        "INC-2026-05-30",
+        "INC-2026-05-24",
+        "INC-2026-05-18"
+      ],
+      "graph_score": 1.0,
+      "store_diagnostic": {
+        "is_store": false
+      },
+      "method": "graph+retrieval-heuristic",
+      "llm_used": false
+    },
+    {
+      "cluster_id": "c-002-000",
+      "graph_top3": [
+        [
+          "cart-redis",
+          1.0
+        ],
+        [
+          "catalog-svc",
+          0.4222
+        ],
+        [
+          "cart-svc",
+          0.2222
+        ]
+      ],
+      "root_cause": "cart-redis",
+      "class": "connection_pool_exhaustion",
+      "confidence": 0.9,
+      "actions": [
+        "Raised maxclients, fixed cart-svc connection leak, added idle-timeout."
+      ],
+      "reasoning": "cart-redis is the most-depended-on service in the cluster and alerts earliest, so the cascade originates there. Past incident INC-2026-05-12 (connection_pool_exhaustion) on cart-redis is the closest match (similarity 1.0).",
+      "similar_incidents": [
+        "INC-2026-05-12",
+        "INC-2026-05-06",
+        "INC-2026-03-25"
+      ],
+      "graph_score": 1.0,
+      "store_diagnostic": {
+        "is_store": true,
+        "dependents": [
+          "cart-svc",
+          "catalog-svc"
+        ],
+        "store_alerted_first": true,
+        "verdict": "store_is_culprit"
+      },
+      "method": "graph+retrieval-heuristic",
+      "llm_used": false
+    },
+    {
+      "cluster_id": "c-003-000",
+      "graph_top3": [
+        [
+          "kafka-broker",
+          1.0
+        ],
+        [
+          "notification-svc",
+          0.3243
+        ]
+      ],
+      "root_cause": "kafka-broker",
+      "class": "rebalance_storm",
+      "confidence": 0.9,
+      "actions": [
+        "Raised session.timeout.ms and max.poll.interval.ms, fixed flapping health check."
+      ],
+      "reasoning": "kafka-broker is the most-depended-on service in the cluster and alerts earliest, so the cascade originates there. Past incident INC-2026-04-30 (rebalance_storm) on kafka-broker is the closest match (similarity 1.0).",
+      "similar_incidents": [
+        "INC-2026-04-30",
+        "INC-2026-04-24",
+        "INC-2026-03-13"
+      ],
+      "graph_score": 1.0,
+      "store_diagnostic": {
+        "is_store": true,
+        "dependents": [
+          "notification-svc"
+        ],
+        "store_alerted_first": true,
+        "verdict": "store_is_culprit"
+      },
+      "method": "graph+retrieval-heuristic",
+      "llm_used": false
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "platform": "GeekShop",
+  "generated_at": "2026-06-08T03:00:00Z",
+  "services": [
+    {
+      "name": "edge-lb",
+      "type": "lb",
+      "criticality": "high",
+      "team": "platform",
+      "depends_on": [
+        "checkout-svc",
+        "catalog-svc",
+        "cart-svc"
+      ]
+    },
+    {
+      "name": "checkout-svc",
+      "type": "service",
+      "criticality": "critical",
+      "team": "checkout",
+      "depends_on": [
+        "payment-svc",
+        "inventory-svc",
+        "cart-svc",
+        "notification-svc"
+      ]
+    },
+    {
+      "name": "payment-svc",
+      "type": "service",
+      "criticality": "critical",
+      "team": "payments",
+      "depends_on": [
+        "payments-db"
+      ]
+    },
+    {
+      "name": "cart-svc",
+      "type": "service",
+      "criticality": "high",
+      "team": "checkout",
+      "depends_on": [
+        "cart-redis",
+        "payment-svc"
+      ]
+    },
+    {
+      "name": "inventory-svc",
+      "type": "service",
+      "criticality": "high",
+      "team": "fulfillment",
+      "depends_on": [
+        "inventory-db"
+      ]
+    },
+    {
+      "name": "notification-svc",
+      "type": "service",
+      "criticality": "medium",
+      "team": "growth",
+      "depends_on": [
+        "payment-svc",
+        "kafka-broker"
+      ]
+    },
+    {
+      "name": "catalog-svc",
+      "type": "service",
+      "criticality": "medium",
+      "team": "catalog",
+      "depends_on": [
+        "cart-redis"
+      ]
+    },
+    {
+      "name": "payments-db",
+      "type": "store",
+      "criticality": "critical",
+      "team": "payments",
+      "depends_on": []
+    },
+    {
+      "name": "cart-redis",
+      "type": "cache",
+      "criticality": "high",
+      "team": "checkout",
+      "depends_on": []
+    },
+    {
+      "name": "kafka-broker",
+      "type": "queue",
+      "criticality": "high",
+      "team": "platform",
+      "depends_on": []
+    },
+    {
+      "name": "inventory-db",
+      "type": "store",
+      "criticality": "high",
+      "team": "fulfillment",
+      "depends_on": []
+    }
+  ]
+}

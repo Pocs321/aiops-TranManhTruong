@@ -1,0 +1,379 @@
+[
+  {
+    "id": "INC-2026-05-30",
+    "date": "2026-05-30",
+    "root_cause_service": "payment-svc",
+    "root_cause_class": "connection_pool_exhaustion",
+    "services_involved": [
+      "payment-svc",
+      "checkout-svc",
+      "edge-lb"
+    ],
+    "severity": "critical",
+    "summary": "payment-svc v3.2 shipped with pool size 50; Black-Friday traffic exhausted it, checkout cascaded.",
+    "remediation": "Rolled back payment-svc to v3.1 and raised HikariCP pool 50 -> 120."
+  },
+  {
+    "id": "INC-2026-05-24",
+    "date": "2026-05-24",
+    "root_cause_service": "payment-svc",
+    "root_cause_class": "connection_pool_exhaustion",
+    "services_involved": [
+      "payment-svc",
+      "checkout-svc"
+    ],
+    "severity": "critical",
+    "summary": "payment-svc DB pool acquire timeouts after a slow downstream provider held connections open.",
+    "remediation": "Set acquisition timeout to 2s, added circuit breaker on provider calls, bumped pool to 100."
+  },
+  {
+    "id": "INC-2026-05-18",
+    "date": "2026-05-18",
+    "root_cause_service": "payment-svc",
+    "root_cause_class": "slow_query",
+    "services_involved": [
+      "payment-svc",
+      "payments-db",
+      "checkout-svc"
+    ],
+    "severity": "high",
+    "summary": "Missing index on payments.txn(merchant_id, created_at) made settlement query table-scan.",
+    "remediation": "Added composite index; query dropped 4s -> 30ms."
+  },
+  {
+    "id": "INC-2026-05-12",
+    "date": "2026-05-12",
+    "root_cause_service": "cart-redis",
+    "root_cause_class": "connection_pool_exhaustion",
+    "services_involved": [
+      "cart-redis",
+      "cart-svc",
+      "catalog-svc"
+    ],
+    "severity": "critical",
+    "summary": "cart-redis hit maxclients=10000; a client leak in cart-svc held idle connections, catalog reads failed.",
+    "remediation": "Raised maxclients, fixed cart-svc connection leak, added idle-timeout."
+  },
+  {
+    "id": "INC-2026-05-06",
+    "date": "2026-05-06",
+    "root_cause_service": "cart-redis",
+    "root_cause_class": "memory_leak",
+    "services_involved": [
+      "cart-redis",
+      "cart-svc"
+    ],
+    "severity": "high",
+    "summary": "cart-redis evicting keys under maxmemory; cart sessions dropped during sale.",
+    "remediation": "Increased maxmemory, switched eviction to allkeys-lru, sharded cart keyspace."
+  },
+  {
+    "id": "INC-2026-04-30",
+    "date": "2026-04-30",
+    "root_cause_service": "kafka-broker",
+    "root_cause_class": "rebalance_storm",
+    "services_involved": [
+      "kafka-broker",
+      "notification-svc"
+    ],
+    "severity": "critical",
+    "summary": "Consumer group rebalance storm after a notification-svc deploy flapped liveness; lag spiked.",
+    "remediation": "Raised session.timeout.ms and max.poll.interval.ms, fixed flapping health check."
+  },
+  {
+    "id": "INC-2026-04-24",
+    "date": "2026-04-24",
+    "root_cause_service": "kafka-broker",
+    "root_cause_class": "rebalance_storm",
+    "services_involved": [
+      "kafka-broker",
+      "notification-svc",
+      "checkout-svc"
+    ],
+    "severity": "high",
+    "summary": "Broker under-replicated partitions during rolling restart; consumers rebalanced repeatedly.",
+    "remediation": "Throttled restart, increased replica.lag.time.max.ms, paused non-critical consumers."
+  },
+  {
+    "id": "INC-2026-04-18",
+    "date": "2026-04-18",
+    "root_cause_service": "checkout-svc",
+    "root_cause_class": "bad_deploy",
+    "services_involved": [
+      "checkout-svc",
+      "edge-lb"
+    ],
+    "severity": "high",
+    "summary": "checkout-svc v8 NPE on guest-checkout path; 5xx on edge-lb.",
+    "remediation": "Rolled back checkout-svc v8."
+  },
+  {
+    "id": "INC-2026-04-12",
+    "date": "2026-04-12",
+    "root_cause_service": "inventory-svc",
+    "root_cause_class": "deadlock",
+    "services_involved": [
+      "inventory-svc",
+      "inventory-db"
+    ],
+    "severity": "high",
+    "summary": "Row-lock deadlock on stock decrement under concurrent orders.",
+    "remediation": "Reordered lock acquisition, added retry-on-deadlock."
+  },
+  {
+    "id": "INC-2026-04-06",
+    "date": "2026-04-06",
+    "root_cause_service": "edge-lb",
+    "root_cause_class": "tls_expiry",
+    "services_involved": [
+      "edge-lb"
+    ],
+    "severity": "critical",
+    "summary": "Wildcard TLS cert expired; all HTTPS terminations failed.",
+    "remediation": "Rotated cert, added 30-day expiry alert."
+  },
+  {
+    "id": "INC-2026-03-31",
+    "date": "2026-03-31",
+    "root_cause_service": "edge-lb",
+    "root_cause_class": "ddos",
+    "services_involved": [
+      "edge-lb",
+      "catalog-svc"
+    ],
+    "severity": "critical",
+    "summary": "L7 flood on /search drove edge-lb saturation.",
+    "remediation": "Enabled rate limiting + WAF rule, scaled lb."
+  },
+  {
+    "id": "INC-2026-03-25",
+    "date": "2026-03-25",
+    "root_cause_service": "catalog-svc",
+    "root_cause_class": "config_push",
+    "services_involved": [
+      "catalog-svc",
+      "cart-redis"
+    ],
+    "severity": "medium",
+    "summary": "Bad feature-flag push disabled catalog cache, hammering redis.",
+    "remediation": "Reverted flag, added staged rollout."
+  },
+  {
+    "id": "INC-2026-03-19",
+    "date": "2026-03-19",
+    "root_cause_service": "payments-db",
+    "root_cause_class": "network_partition",
+    "services_involved": [
+      "payments-db",
+      "payment-svc"
+    ],
+    "severity": "critical",
+    "summary": "AZ network partition isolated payments-db primary; failover delayed.",
+    "remediation": "Forced failover, tuned failover detector."
+  },
+  {
+    "id": "INC-2026-03-13",
+    "date": "2026-03-13",
+    "root_cause_service": "notification-svc",
+    "root_cause_class": "memory_leak",
+    "services_involved": [
+      "notification-svc"
+    ],
+    "severity": "medium",
+    "summary": "Template cache leak OOM-killed notification pods.",
+    "remediation": "Bounded cache, raised memory limit."
+  },
+  {
+    "id": "INC-2026-03-07",
+    "date": "2026-03-07",
+    "root_cause_service": "cart-svc",
+    "root_cause_class": "slow_query",
+    "services_involved": [
+      "cart-svc",
+      "cart-redis"
+    ],
+    "severity": "medium",
+    "summary": "N+1 redis MGET pattern on cart render.",
+    "remediation": "Batched into pipeline."
+  },
+  {
+    "id": "INC-2026-03-01",
+    "date": "2026-03-01",
+    "root_cause_service": "inventory-svc",
+    "root_cause_class": "tls_expiry",
+    "services_involved": [
+      "inventory-svc"
+    ],
+    "severity": "high",
+    "summary": "inventory-svc tls expiry incident during routine operations.",
+    "remediation": "Standard tls expiry remediation applied to inventory-svc."
+  },
+  {
+    "id": "INC-2026-02-23",
+    "date": "2026-02-23",
+    "root_cause_service": "notification-svc",
+    "root_cause_class": "ddos",
+    "services_involved": [
+      "notification-svc"
+    ],
+    "severity": "medium",
+    "summary": "notification-svc ddos incident during routine operations.",
+    "remediation": "Standard ddos remediation applied to notification-svc."
+  },
+  {
+    "id": "INC-2026-02-17",
+    "date": "2026-02-17",
+    "root_cause_service": "catalog-svc",
+    "root_cause_class": "other",
+    "services_involved": [
+      "catalog-svc"
+    ],
+    "severity": "low",
+    "summary": "catalog-svc other incident during routine operations.",
+    "remediation": "Standard other remediation applied to catalog-svc."
+  },
+  {
+    "id": "INC-2026-02-11",
+    "date": "2026-02-11",
+    "root_cause_service": "payments-db",
+    "root_cause_class": "bad_deploy",
+    "services_involved": [
+      "payments-db"
+    ],
+    "severity": "high",
+    "summary": "payments-db bad deploy incident during routine operations.",
+    "remediation": "Standard bad deploy remediation applied to payments-db."
+  },
+  {
+    "id": "INC-2026-02-05",
+    "date": "2026-02-05",
+    "root_cause_service": "cart-redis",
+    "root_cause_class": "config_push",
+    "services_involved": [
+      "cart-redis"
+    ],
+    "severity": "medium",
+    "summary": "cart-redis config push incident during routine operations.",
+    "remediation": "Standard config push remediation applied to cart-redis."
+  },
+  {
+    "id": "INC-2026-01-30",
+    "date": "2026-01-30",
+    "root_cause_service": "kafka-broker",
+    "root_cause_class": "slow_query",
+    "services_involved": [
+      "kafka-broker"
+    ],
+    "severity": "low",
+    "summary": "kafka-broker slow query incident during routine operations.",
+    "remediation": "Standard slow query remediation applied to kafka-broker."
+  },
+  {
+    "id": "INC-2026-01-24",
+    "date": "2026-01-24",
+    "root_cause_service": "inventory-db",
+    "root_cause_class": "deadlock",
+    "services_involved": [
+      "inventory-db"
+    ],
+    "severity": "high",
+    "summary": "inventory-db deadlock incident during routine operations.",
+    "remediation": "Standard deadlock remediation applied to inventory-db."
+  },
+  {
+    "id": "INC-2026-01-18",
+    "date": "2026-01-18",
+    "root_cause_service": "edge-lb",
+    "root_cause_class": "memory_leak",
+    "services_involved": [
+      "edge-lb"
+    ],
+    "severity": "medium",
+    "summary": "edge-lb memory leak incident during routine operations.",
+    "remediation": "Standard memory leak remediation applied to edge-lb."
+  },
+  {
+    "id": "INC-2026-01-12",
+    "date": "2026-01-12",
+    "root_cause_service": "checkout-svc",
+    "root_cause_class": "network_partition",
+    "services_involved": [
+      "checkout-svc"
+    ],
+    "severity": "low",
+    "summary": "checkout-svc network partition incident during routine operations.",
+    "remediation": "Standard network partition remediation applied to checkout-svc."
+  },
+  {
+    "id": "INC-2026-01-06",
+    "date": "2026-01-06",
+    "root_cause_service": "payment-svc",
+    "root_cause_class": "tls_expiry",
+    "services_involved": [
+      "payment-svc"
+    ],
+    "severity": "high",
+    "summary": "payment-svc tls expiry incident during routine operations.",
+    "remediation": "Standard tls expiry remediation applied to payment-svc."
+  },
+  {
+    "id": "INC-2025-12-31",
+    "date": "2025-12-31",
+    "root_cause_service": "cart-svc",
+    "root_cause_class": "ddos",
+    "services_involved": [
+      "cart-svc"
+    ],
+    "severity": "medium",
+    "summary": "cart-svc ddos incident during routine operations.",
+    "remediation": "Standard ddos remediation applied to cart-svc."
+  },
+  {
+    "id": "INC-2025-12-25",
+    "date": "2025-12-25",
+    "root_cause_service": "inventory-svc",
+    "root_cause_class": "other",
+    "services_involved": [
+      "inventory-svc"
+    ],
+    "severity": "low",
+    "summary": "inventory-svc other incident during routine operations.",
+    "remediation": "Standard other remediation applied to inventory-svc."
+  },
+  {
+    "id": "INC-2025-12-19",
+    "date": "2025-12-19",
+    "root_cause_service": "notification-svc",
+    "root_cause_class": "bad_deploy",
+    "services_involved": [
+      "notification-svc"
+    ],
+    "severity": "high",
+    "summary": "notification-svc bad deploy incident during routine operations.",
+    "remediation": "Standard bad deploy remediation applied to notification-svc."
+  },
+  {
+    "id": "INC-2025-12-13",
+    "date": "2025-12-13",
+    "root_cause_service": "catalog-svc",
+    "root_cause_class": "config_push",
+    "services_involved": [
+      "catalog-svc"
+    ],
+    "severity": "medium",
+    "summary": "catalog-svc config push incident during routine operations.",
+    "remediation": "Standard config push remediation applied to catalog-svc."
+  },
+  {
+    "id": "INC-2025-12-07",
+    "date": "2025-12-07",
+    "root_cause_service": "payments-db",
+    "root_cause_class": "slow_query",
+    "services_involved": [
+      "payments-db"
+    ],
+    "severity": "low",
+    "summary": "payments-db slow query incident during routine operations.",
+    "remediation": "Standard slow query remediation applied to payments-db."
+  }
+]

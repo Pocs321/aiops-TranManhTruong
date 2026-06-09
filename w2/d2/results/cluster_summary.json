@@ -1,0 +1,137 @@
+{
+  "generated_at": "2026-06-08T03:00:00Z",
+  "source": "w2-d1-correlator",
+  "n_clusters": 3,
+  "clusters": [
+    {
+      "cluster_id": "c-001-000",
+      "services": [
+        "edge-lb",
+        "checkout-svc",
+        "payment-svc",
+        "notification-svc",
+        "cart-svc",
+        "inventory-svc"
+      ],
+      "time_range": [
+        "2026-06-08T03:14:05Z",
+        "2026-06-08T03:19:34Z"
+      ],
+      "max_severity": "critical",
+      "alert_count": 48,
+      "alert_ids": [
+        "c-001-000-payment-svc-00",
+        "c-001-000-payment-svc-01",
+        "c-001-000-payment-svc-02",
+        "c-001-000-payment-svc-03",
+        "c-001-000-payment-svc-04",
+        "c-001-000-payment-svc-05",
+        "c-001-000-payment-svc-06",
+        "c-001-000-payment-svc-07",
+        "c-001-000-payment-svc-08",
+        "c-001-000-payment-svc-09",
+        "c-001-000-payment-svc-10",
+        "c-001-000-payment-svc-11",
+        "c-001-000-payment-svc-12",
+        "c-001-000-payment-svc-13",
+        "c-001-000-checkout-svc-00",
+        "c-001-000-checkout-svc-01",
+        "c-001-000-checkout-svc-02",
+        "c-001-000-checkout-svc-03",
+        "c-001-000-checkout-svc-04",
+        "c-001-000-checkout-svc-05",
+        "c-001-000-checkout-svc-06",
+        "c-001-000-checkout-svc-07",
+        "c-001-000-checkout-svc-08",
+        "c-001-000-checkout-svc-09",
+        "c-001-000-checkout-svc-10",
+        "c-001-000-checkout-svc-11",
+        "c-001-000-cart-svc-00",
+        "c-001-000-cart-svc-01",
+        "c-001-000-cart-svc-02",
+        "c-001-000-cart-svc-03",
+        "c-001-000-inventory-svc-00",
+        "c-001-000-inventory-svc-01",
+        "c-001-000-inventory-svc-02",
+        "c-001-000-notification-svc-00",
+        "c-001-000-notification-svc-01",
+        "c-001-000-notification-svc-02",
+        "c-001-000-notification-svc-03",
+        "c-001-000-notification-svc-04",
+        "c-001-000-notification-svc-05",
+        "c-001-000-edge-lb-00",
+        "c-001-000-edge-lb-01",
+        "c-001-000-edge-lb-02",
+        "c-001-000-edge-lb-03",
+        "c-001-000-edge-lb-04",
+        "c-001-000-edge-lb-05",
+        "c-001-000-edge-lb-06",
+        "c-001-000-edge-lb-07",
+        "c-001-000-edge-lb-08"
+      ]
+    },
+    {
+      "cluster_id": "c-002-000",
+      "services": [
+        "catalog-svc",
+        "cart-svc",
+        "cart-redis"
+      ],
+      "time_range": [
+        "2026-06-08T04:02:00Z",
+        "2026-06-08T04:04:45Z"
+      ],
+      "max_severity": "critical",
+      "alert_count": 19,
+      "alert_ids": [
+        "c-002-000-cart-redis-00",
+        "c-002-000-cart-redis-01",
+        "c-002-000-cart-redis-02",
+        "c-002-000-cart-redis-03",
+        "c-002-000-cart-redis-04",
+        "c-002-000-cart-redis-05",
+        "c-002-000-cart-redis-06",
+        "c-002-000-cart-redis-07",
+        "c-002-000-catalog-svc-00",
+        "c-002-000-catalog-svc-01",
+        "c-002-000-catalog-svc-02",
+        "c-002-000-catalog-svc-03",
+        "c-002-000-catalog-svc-04",
+        "c-002-000-cart-svc-00",
+        "c-002-000-cart-svc-01",
+        "c-002-000-cart-svc-02",
+        "c-002-000-cart-svc-03",
+        "c-002-000-cart-svc-04",
+        "c-002-000-cart-svc-05"
+      ]
+    },
+    {
+      "cluster_id": "c-003-000",
+      "services": [
+        "notification-svc",
+        "kafka-broker"
+      ],
+      "time_range": [
+        "2026-06-08T05:10:00Z",
+        "2026-06-08T05:12:35Z"
+      ],
+      "max_severity": "critical",
+      "alert_count": 13,
+      "alert_ids": [
+        "c-003-000-kafka-broker-00",
+        "c-003-000-kafka-broker-01",
+        "c-003-000-kafka-broker-02",
+        "c-003-000-kafka-broker-03",
+        "c-003-000-kafka-broker-04",
+        "c-003-000-kafka-broker-05",
+        "c-003-000-kafka-broker-06",
+        "c-003-000-notification-svc-00",
+        "c-003-000-notification-svc-01",
+        "c-003-000-notification-svc-02",
+        "c-003-000-notification-svc-03",
+        "c-003-000-notification-svc-04",
+        "c-003-000-notification-svc-05"
+      ]
+    }
+  ]
+}
