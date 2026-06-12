@@ -1,4 +1,4 @@
-# A2 — Bảng quyết định component (bản dịch)
+# A2 — Bảng quyết định component 
 
 Trạng thái đích là **AWS-managed-first**: mọi capability chuyển sang dịch vụ AWS managed, trừ khi một tool SaaS (a) không phải là pain point và (b) rẻ để giữ lại. Tầng ingestion thống nhất trên OpenTelemetry để mọi backend phía dưới đều thay được mà không phải instrument lại — đó là câu trả lời mang tính cấu trúc cho pain point #10 (vendor lock-in).
 
