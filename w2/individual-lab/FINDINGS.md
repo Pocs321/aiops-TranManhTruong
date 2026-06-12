@@ -1,6 +1,6 @@
-# FINDINGS (bản dịch)
+# FINDINGS 
 
-## A7 — Kế hoạch POC (component bất định nhất)
+## A7 — Kế hoạch POC 
 
 Component bất định nhất là **tầng tail-based sampling trong OTel Collector** (ADR-002). Mọi thứ khác trong thiết kế là dịch vụ managed làm đúng những gì trang pricing của nó nói; riêng mảnh này là stateful, tự vận hành, và kiểu hỏng của nó là im lặng — nó sẽ vứt đúng những trace mà tuyên bố MTTR −30% phụ thuộc vào. **Giả định cần kiểm chứng trước tiên:** *một chính sách tail-sampling của Collector có thể giữ ≥99% trace lỗi và trace outlier latency p99 trong khi tổng volume ghi ≤5% requests, với <2 GB RAM mỗi node Collector ở tốc độ span production.* **Phép đo (3 ngày):** triển khai Collector ở chế độ shadow trên checkout-svc (service có fan-out cao nhất: 4 edge hạ nguồn trong `services.json`); tiêm ba mẫu lỗi rút từ lịch sử incident — cạn connection pool (mẫu INC-2025-11-08), query chậm ảnh hưởng ~0.3% requests (điểm mù của pain point #2), và một đợt bùng lỗi; rồi so sánh trace mà X-Ray bắt được với các cửa sổ lỗi đã tiêm. Xác nhận: tỉ lệ bắt trace lỗi ≥99%, các query chậm tần suất 0.3% xuất hiện trong ≥95% cửa sổ xảy ra của chúng, counter dropped-span của `otelcol_processor_tail_sampling` ≈ 0, RAM < 2 GB. Bất kỳ chỉ số nào trượt sẽ định hình lại ADR-002 trước tuần 2 (phương án lui theo migration plan: lập lại kế hoạch, có thể nghiêng về phương án 3 — head-sampling cao hơn — với chi phí phụ trội đã biết).
 
