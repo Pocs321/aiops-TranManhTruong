@@ -1,4 +1,4 @@
-# A3 — Cost model: hiện trạng → trạng thái đích (bản dịch)
+# A3 — Cost model: hiện trạng → trạng thái đích 
 
 Mọi giá đích đều là **giá public list us-east-1** (trang pricing AWS / giá public PagerDuty + Atlassian, kiểm tra tháng 6/2026). Phép tính giữ hiển thị rõ theo từng dòng. Số liệu hiện trạng lấy từ `current-stack.md` (ảnh chụp hóa đơn).
 
