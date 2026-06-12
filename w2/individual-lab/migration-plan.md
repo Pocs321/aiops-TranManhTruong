@@ -1,4 +1,4 @@
-# A5 — Kế hoạch migration 8 tuần (bản dịch)
+# A5 — Kế hoạch migration 8 tuần 
 
 **Nguyên tắc vận hành** (áp dụng cho mọi tuần):
 - **Bảo đảm không-blackout:** không đường tín hiệu nào được cutover cho đến khi hệ thay thế đã chạy *song song* ≥1 tuần và pass gate của nó. Stack cũ tiếp tục nhận dữ liệu đến hết tuần sau khi hệ thay thế trở thành primary. Không có thời điểm nào trong giờ làm việc mà một tín hiệu không quan sát được ở bất kỳ tool nào.
