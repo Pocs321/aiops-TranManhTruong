@@ -1,4 +1,4 @@
-# A6 — Risk register: 6 rủi ro hàng đầu 
+# A6 Risk register: 6 rủi ro hàng đầu 
 
 | # | Rủi ro | Khả năng | Tác động | Biện pháp giảm thiểu (cụ thể) | Người chịu trách nhiệm |
 |---|---|---|---|---|---|
