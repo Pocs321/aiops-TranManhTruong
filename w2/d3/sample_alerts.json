@@ -1,0 +1,9 @@
+{
+  "alerts": [
+    {"id": "a-1", "ts": "2026-06-12T09:42:01Z", "service": "payment-svc", "metric": "latency_p99_ms", "severity": "crit", "value": 1840, "threshold": 800},
+    {"id": "a-2", "ts": "2026-06-12T09:42:08Z", "service": "order-svc", "metric": "error_rate", "severity": "error", "value": 0.12, "threshold": 0.02},
+    {"id": "a-3", "ts": "2026-06-12T09:42:15Z", "service": "auth-svc", "metric": "latency_p99_ms", "severity": "warn", "value": 410, "threshold": 300},
+    {"id": "a-4", "ts": "2026-06-12T09:42:22Z", "service": "db-primary", "metric": "cpu_pct", "severity": "crit", "value": 97, "threshold": 85},
+    {"id": "a-5", "ts": "2026-06-12T09:42:30Z", "service": "checkout-svc", "metric": "latency_p99_ms", "severity": "error", "value": 2200, "threshold": 1000}
+  ]
+}

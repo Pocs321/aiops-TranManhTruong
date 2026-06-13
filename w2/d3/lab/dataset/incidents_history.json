@@ -1,0 +1,37 @@
+{
+  "_comment": "Past incidents used for similar-incident retrieval in rca.py. similarity is computed from service-set overlap (Jaccard) plus a root-cause match bonus.",
+  "incidents": [
+    {
+      "id": "INC-2025-11-08",
+      "root_cause": "payment-svc",
+      "class": "connection_pool_exhaustion",
+      "services": ["payment-svc", "checkout-svc", "db-primary"],
+      "summary": "payment-svc exhausted its DB connection pool after a deploy bumped concurrency; checkout latency spiked.",
+      "actions": ["Rollback payment-svc to previous release", "Increase DB connection pool size"]
+    },
+    {
+      "id": "INC-2025-12-02",
+      "root_cause": "db-primary",
+      "class": "db_saturation",
+      "services": ["db-primary", "payment-svc", "order-svc", "auth-svc"],
+      "summary": "db-primary CPU saturated under a reporting query storm; every dependent app service degraded.",
+      "actions": ["Failover to db-replica", "Throttle batch reporting traffic"]
+    },
+    {
+      "id": "INC-2026-01-15",
+      "root_cause": "redis-cache",
+      "class": "cache_eviction_storm",
+      "services": ["redis-cache", "auth-svc", "user-svc"],
+      "summary": "redis-cache hit maxmemory and evicted hot keys; auth/user token lookups fell through to DB.",
+      "actions": ["Scale redis cluster memory", "Warm cache for hot auth keys"]
+    },
+    {
+      "id": "INC-2026-03-09",
+      "root_cause": "kafka-broker",
+      "class": "broker_partition_lag",
+      "services": ["kafka-broker", "order-svc", "notification-svc"],
+      "summary": "kafka-broker leader for hot partitions lagged; order events and notifications backed up.",
+      "actions": ["Restart lagging broker", "Rebalance hot partitions"]
+    }
+  ]
+}

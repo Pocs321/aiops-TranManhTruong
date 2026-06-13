@@ -1,0 +1,15 @@
+{
+  "_comment": "Service dependency graph. Edge 'A depends_on B' means A calls B, so a fault in B can surface as alerts on A. Used by correlate.py (topological clustering) and rca.py (root-cause ranking).",
+  "services": [
+    { "name": "api-gateway",      "tier": "edge", "depends_on": ["checkout-svc", "user-svc", "order-svc"] },
+    { "name": "checkout-svc",     "tier": "app",  "depends_on": ["payment-svc", "order-svc", "auth-svc"] },
+    { "name": "payment-svc",      "tier": "app",  "depends_on": ["db-primary", "redis-cache", "auth-svc"] },
+    { "name": "order-svc",        "tier": "app",  "depends_on": ["db-primary", "kafka-broker"] },
+    { "name": "auth-svc",         "tier": "app",  "depends_on": ["redis-cache", "db-primary"] },
+    { "name": "user-svc",         "tier": "app",  "depends_on": ["db-primary", "redis-cache"] },
+    { "name": "notification-svc", "tier": "app",  "depends_on": ["kafka-broker"] },
+    { "name": "db-primary",       "tier": "data", "depends_on": [] },
+    { "name": "redis-cache",      "tier": "data", "depends_on": [] },
+    { "name": "kafka-broker",     "tier": "data", "depends_on": [] }
+  ]
+}
