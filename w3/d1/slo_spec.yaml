@@ -1,0 +1,72 @@
+# W3-D1 — SLO specification for the 3-tier e-commerce stack
+# (React/CDN frontend  ->  FastAPI x4  ->  Postgres primary/replica)
+#
+# All "current" numbers below are taken from baseline.json (3-day seed-42 sample,
+# computed by scripts/compute_baseline.py). Targets respect the SRE invariant
+# SLA < SLO < current-measurement so every SLO keeps a real error-budget buffer.
+version: 1
+services:
+  # ---------------------------------------------------------------------------
+  - name: api
+    sli:
+      name: api_availability
+      kind: availability
+      # A request is GOOD when the server served it without a server-side error
+      # AND within the latency budget. 5xx and 429 are system faults (429 = the
+      # system rejecting the user). 4xx (except 429) are client errors and are
+      # NOT counted as failures (see DESIGN.md Q4) so bots/scrapers cannot drag
+      # the SLI down. Latency cut = 500 ms (well above measured p99 = 156 ms).
+      formula: "count(status NOT IN {5xx,429} AND latency_ms < 500) / count(all requests)"
+      promql_good: 'sum(rate(http_requests_total{job="api",status!~"5..|429"}[5m]))'
+      promql_total: 'sum(rate(http_requests_total{job="api"}[5m]))'
+      source: data/access_log.jsonl
+    slo:
+      target: 0.999          # 99.9%. Baseline 5xx+429 rate = 0.003488 (incident-dense
+      window_days: 30        # 3-day sample); non-incident floor ~99.85%. 99.9% is the
+                             # standard target for a load-balanced 4-instance API tier.
+    budget:
+      total_events_per_month: 20737800      # events_per_day 691260 * 30
+      allowed_failures_per_month: 20738      # (1 - 0.999) * 20737800
+      downtime_minutes_equivalent: 43        # allowed_failures / (691260/1440 req per min)
+
+  # ---------------------------------------------------------------------------
+  - name: db
+    sli:
+      name: db_query_success
+      kind: availability
+      # A query is GOOD when it succeeds (success == true). Latency is tracked as
+      # a guardrail: measured duration p99 = 59 ms, comfortably under the 100 ms
+      # budget, so the binding reliability signal here is query success, not speed.
+      formula: "count(success == true) / count(all queries)   # guardrail: duration_ms < 100"
+      promql_good: 'sum(rate(db_queries_total{result="ok"}[5m]))'
+      promql_total: 'sum(rate(db_queries_total[5m]))'
+      source: data/db_query_log.jsonl
+    slo:
+      target: 0.999          # baseline failure rate = 0.000151 -> current ~99.985%,
+      window_days: 30        # so 99.9% keeps a healthy buffer for a primary/replica DB.
+    budget:
+      total_events_per_month: 1726380       # events_per_day 57546 * 30
+      allowed_failures_per_month: 1726       # (1 - 0.999) * 1726380
+      downtime_minutes_equivalent: 43        # allowed_failures / (57546/1440 q per min)
+
+  # ---------------------------------------------------------------------------
+  - name: frontend
+    sli:
+      name: frontend_page_load_ok
+      kind: availability
+      # RUM "good page load" = rendered fast AND with no client-visible error.
+      # dom_ready_ms < 3000 (perceived-load budget) AND js_error == false AND
+      # network_error == false. See DESIGN.md Q1 for why this composite beats the
+      # other RUM candidate signals.
+      formula: "count(dom_ready_ms < 3000 AND js_error == false AND network_error == false) / count(all page loads)"
+      promql_good: 'sum(rate(frontend_page_loads_total{outcome="ok"}[5m]))'
+      promql_total: 'sum(rate(frontend_page_loads_total[5m]))'
+      source: data/frontend_rum.jsonl
+    slo:
+      target: 0.98           # baseline good rate = 0.9861 (incl. the 90-min CDN incident);
+      window_days: 30        # 98% leaves buffer. NOTE: 99% (sample-solution) would be
+                             # UNACHIEVABLE since current = 98.61% < 99%.
+    budget:
+      total_events_per_month: 5184000       # events_per_day 172800 * 30
+      allowed_failures_per_month: 103680     # (1 - 0.98) * 5184000
+      downtime_minutes_equivalent: 864        # allowed_failures / (172800/1440 loads per min)

@@ -1,0 +1,162 @@
+# W3-D1 — Multi-Window Multi-Burn-Rate (MWMBR) alert rules
+# 3 services x 3 tiers = 9 rules. Google SRE Workbook Ch.5 windows/thresholds:
+#   Tier 1 (urgent page): long 1h  / short 5m  / burn >= 12   (tuned from Google 14.4 — see DESIGN Q5)
+#   Tier 2 (page):        long 6h  / short 30m / burn >= 6     (Google default: 5% of 30d budget in 6h)
+#   Tier 3 (ticket):      long 3d  / short 6h  / burn >= 1     (Google default: 10% of 30d budget in 3d)
+# Each rule fires only when BOTH the long and short window exceed the threshold
+# (the `and`), so alerts page fast on real burn yet stop within ~the short window
+# after the incident clears. SLO target appears as the `(1 - target)` denominator.
+#
+# Tier-1 tuning note: Google's canonical 14.4 = "2% of 30d budget in 1h". On this
+# stack the 1h long-window average of a sharp sub-12-min total outage at a low-traffic
+# hour lands at burn ~14 in the FIRST incident minute, so 14.4 paged one minute late
+# (validation mttd_delta = 60s, exactly on the acceptance boundary). Burn >= 12
+# restores first-minute paging with false positives still 0 (baseline burn ~1.5) and
+# identical noise reduction (86.4%). Tiers 2 and 3 keep the Google defaults.
+groups:
+  # ===========================================================================
+  - name: api-slo            # SLO target 0.999
+    rules:
+      - alert: api_burn_rate_tier1_fast
+        expr: |
+          (
+            sum(rate(http_requests_total{job="api",status=~"5..|429"}[1h]))
+            / sum(rate(http_requests_total{job="api"}[1h]))
+          ) / (1 - 0.999) >= 12
+          and
+          (
+            sum(rate(http_requests_total{job="api",status=~"5..|429"}[5m]))
+            / sum(rate(http_requests_total{job="api"}[5m]))
+          ) / (1 - 0.999) >= 12
+        labels: {severity: page, tier: "1", service: api}
+        annotations:
+          summary: "API burn >=12x over 1h AND 5m (~1.7% of 30d budget in 1h) — page on-call now"
+          runbook: "https://runbooks.example.com/slo-burn"
+      - alert: api_burn_rate_tier2_page
+        expr: |
+          (
+            sum(rate(http_requests_total{job="api",status=~"5..|429"}[6h]))
+            / sum(rate(http_requests_total{job="api"}[6h]))
+          ) / (1 - 0.999) >= 6
+          and
+          (
+            sum(rate(http_requests_total{job="api",status=~"5..|429"}[30m]))
+            / sum(rate(http_requests_total{job="api"}[30m]))
+          ) / (1 - 0.999) >= 6
+        labels: {severity: page, tier: "2", service: api}
+        annotations:
+          summary: "API burn >=6x over 6h AND 30m (5% of 30d budget in 6h) — page on-call"
+          runbook: "https://runbooks.example.com/slo-burn"
+      - alert: api_burn_rate_tier3_ticket
+        expr: |
+          (
+            sum(rate(http_requests_total{job="api",status=~"5..|429"}[3d]))
+            / sum(rate(http_requests_total{job="api"}[3d]))
+          ) / (1 - 0.999) >= 1
+          and
+          (
+            sum(rate(http_requests_total{job="api",status=~"5..|429"}[6h]))
+            / sum(rate(http_requests_total{job="api"}[6h]))
+          ) / (1 - 0.999) >= 1
+        labels: {severity: ticket, tier: "3", service: api}
+        annotations:
+          summary: "API slow burn >=1x over 3d AND 6h (10% of 30d budget in 3d) — open ticket"
+          runbook: "https://runbooks.example.com/slo-burn"
+
+  # ===========================================================================
+  - name: db-slo             # SLO target 0.999
+    rules:
+      - alert: db_burn_rate_tier1_fast
+        expr: |
+          (
+            sum(rate(db_queries_total{result="error"}[1h]))
+            / sum(rate(db_queries_total[1h]))
+          ) / (1 - 0.999) >= 12
+          and
+          (
+            sum(rate(db_queries_total{result="error"}[5m]))
+            / sum(rate(db_queries_total[5m]))
+          ) / (1 - 0.999) >= 12
+        labels: {severity: page, tier: "1", service: db}
+        annotations:
+          summary: "DB query-failure burn >=12x over 1h AND 5m — page on-call now"
+          runbook: "https://runbooks.example.com/slo-burn"
+      - alert: db_burn_rate_tier2_page
+        expr: |
+          (
+            sum(rate(db_queries_total{result="error"}[6h]))
+            / sum(rate(db_queries_total[6h]))
+          ) / (1 - 0.999) >= 6
+          and
+          (
+            sum(rate(db_queries_total{result="error"}[30m]))
+            / sum(rate(db_queries_total[30m]))
+          ) / (1 - 0.999) >= 6
+        labels: {severity: page, tier: "2", service: db}
+        annotations:
+          summary: "DB query-failure burn >=6x over 6h AND 30m — page on-call"
+          runbook: "https://runbooks.example.com/slo-burn"
+      - alert: db_burn_rate_tier3_ticket
+        expr: |
+          (
+            sum(rate(db_queries_total{result="error"}[3d]))
+            / sum(rate(db_queries_total[3d]))
+          ) / (1 - 0.999) >= 1
+          and
+          (
+            sum(rate(db_queries_total{result="error"}[6h]))
+            / sum(rate(db_queries_total[6h]))
+          ) / (1 - 0.999) >= 1
+        labels: {severity: ticket, tier: "3", service: db}
+        annotations:
+          summary: "DB slow query-failure burn >=1x over 3d AND 6h — open ticket"
+          runbook: "https://runbooks.example.com/slo-burn"
+
+  # ===========================================================================
+  - name: frontend-slo       # SLO target 0.98
+    rules:
+      - alert: frontend_burn_rate_tier1_fast
+        expr: |
+          (
+            sum(rate(frontend_page_loads_total{outcome="bad"}[1h]))
+            / sum(rate(frontend_page_loads_total[1h]))
+          ) / (1 - 0.98) >= 12
+          and
+          (
+            sum(rate(frontend_page_loads_total{outcome="bad"}[5m]))
+            / sum(rate(frontend_page_loads_total[5m]))
+          ) / (1 - 0.98) >= 12
+        labels: {severity: page, tier: "1", service: frontend}
+        annotations:
+          summary: "Frontend bad-page-load burn >=12x over 1h AND 5m — page on-call now"
+          runbook: "https://runbooks.example.com/slo-burn"
+      - alert: frontend_burn_rate_tier2_page
+        expr: |
+          (
+            sum(rate(frontend_page_loads_total{outcome="bad"}[6h]))
+            / sum(rate(frontend_page_loads_total[6h]))
+          ) / (1 - 0.98) >= 6
+          and
+          (
+            sum(rate(frontend_page_loads_total{outcome="bad"}[30m]))
+            / sum(rate(frontend_page_loads_total[30m]))
+          ) / (1 - 0.98) >= 6
+        labels: {severity: page, tier: "2", service: frontend}
+        annotations:
+          summary: "Frontend bad-page-load burn >=6x over 6h AND 30m — page on-call"
+          runbook: "https://runbooks.example.com/slo-burn"
+      - alert: frontend_burn_rate_tier3_ticket
+        expr: |
+          (
+            sum(rate(frontend_page_loads_total{outcome="bad"}[3d]))
+            / sum(rate(frontend_page_loads_total[3d]))
+          ) / (1 - 0.98) >= 1
+          and
+          (
+            sum(rate(frontend_page_loads_total{outcome="bad"}[6h]))
+            / sum(rate(frontend_page_loads_total[6h]))
+          ) / (1 - 0.98) >= 1
+        labels: {severity: ticket, tier: "3", service: frontend}
+        annotations:
+          summary: "Frontend slow bad-page-load burn >=1x over 3d AND 6h — open ticket"
+          runbook: "https://runbooks.example.com/slo-burn"
