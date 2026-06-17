@@ -1,4 +1,4 @@
-# Bài nộp W3-D3 — ourlife937
+# Bài nộp W3-D3
 
 ## Sự cố đã chọn
 
