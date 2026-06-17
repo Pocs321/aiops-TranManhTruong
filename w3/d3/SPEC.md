@@ -1,4 +1,4 @@
-# Spec Nền tảng AIOps thu nhỏ — ourlife937
+# Spec Nền tảng AIOps thu nhỏ 
 
 > Spec tổng hợp W3. Mục 3 và 5–6 tham chiếu artifact **thật, chạy được** (pipeline
 > W2 và bản tái hiện W3-D3 này). Mục 2 và 4 là **bản thay thế tổng hợp**, ghi rõ:
