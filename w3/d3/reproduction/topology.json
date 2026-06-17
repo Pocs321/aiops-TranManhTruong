@@ -1,0 +1,11 @@
+{
+  "_comment": "Đồ thị phụ thuộc tầng edge cho bản tái hiện sự cố Cloudflare-2019 (WAF regex). Cạnh 'A depends_on B' nghĩa là A gọi B, nên lỗi ở B có thể biểu hiện thành alert ở A. Cùng schema với w2/d3/lab/dataset/services.json để pipeline thật (build_graph_from_json / correlate / rca) dùng được nguyên trạng. Ý đồ của đồ thị: đường đi request là proxy -> waf-engine, còn artifact rule đến qua ruleset-distributor. Thành phần bị nghẽn CPU là waf-engine; nhưng *nguyên nhân* là nội dung của một rule được đẩy qua ruleset-distributor.",
+  "services": [
+    { "name": "cdn-cache",           "tier": "edge",    "depends_on": ["edge-http-proxy"] },
+    { "name": "dns-frontend",        "tier": "edge",    "depends_on": ["edge-http-proxy"] },
+    { "name": "edge-http-proxy",     "tier": "edge",    "depends_on": ["waf-engine"] },
+    { "name": "waf-engine",          "tier": "app",     "depends_on": ["ruleset-distributor"] },
+    { "name": "ruleset-distributor", "tier": "control", "depends_on": ["config-store"] },
+    { "name": "config-store",        "tier": "data",    "depends_on": [] }
+  ]
+}

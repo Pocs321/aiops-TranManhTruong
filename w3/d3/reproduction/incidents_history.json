@@ -1,0 +1,29 @@
+{
+  "_comment": "Lịch sử sự cố cho bước truy hồi sự-cố-tương-tự của pipeline (rca.py find_similar_incidents). Cố ý gieo sao cho KHÔNG sự cố nào trùng cơ chế regex/CPU của sự cố được tái hiện. Chúng trùng *dịch vụ* với sự cố nên truy hồi Jaccard vẫn lôi ra — minh hoạ rằng độ tương tự theo tập-dịch-vụ có thể trả về một 'tiền lệ' tự tin nhưng SAI cơ chế. Xem postmortem.md lỗ hổng phát hiện #2.",
+  "incidents": [
+    {
+      "id": "INC-2026-02-11",
+      "root_cause": "cdn-cache",
+      "class": "cache_eviction_storm",
+      "services": ["cdn-cache", "edge-http-proxy"],
+      "summary": "cdn-cache chạm maxmemory và trục xuất các object nóng; lượt fetch origin qua edge-http-proxy tăng vọt. Khắc phục bằng cách mở rộng bộ nhớ cache.",
+      "actions": ["Mở rộng bộ nhớ cdn-cache", "Làm nóng trước các object nóng"]
+    },
+    {
+      "id": "INC-2026-04-03",
+      "root_cause": "dns-frontend",
+      "class": "resolver_latency",
+      "services": ["dns-frontend", "edge-http-proxy"],
+      "summary": "Độ trễ resolver của dns-frontend tăng sau một thay đổi resolver thượng nguồn; độ trễ byte-đầu-tiên tại edge tăng theo.",
+      "actions": ["Khôi phục cấu hình resolver", "Đặt sàn TTL cho cache resolver"]
+    },
+    {
+      "id": "INC-2026-05-20",
+      "root_cause": "config-store",
+      "class": "config_store_slow_read",
+      "services": ["config-store", "ruleset-distributor"],
+      "summary": "Độ trễ đọc của config-store suy giảm; ruleset-distributor pull chậm, làm chậm lan truyền rule. Không ảnh hưởng data plane.",
+      "actions": ["Chuyển đổi dự phòng config-store sang bản sao", "Thêm cache rule phía distributor"]
+    }
+  ]
+}

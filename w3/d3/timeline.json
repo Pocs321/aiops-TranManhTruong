@@ -1,0 +1,73 @@
+{
+  "incident": "cloudflare-waf-regex-repro",
+  "captured_utc": "2026-06-15T09:58:51.954438+00:00",
+  "note": "timeline nén so với sự cố 2019 dài 27 phút; môi trường tối giản tái hiện mẫu hình, không khớp đồng hồ thực",
+  "events": [
+    {
+      "ts": "2026-06-15T09:58:34.892859+00:00",
+      "event": "reproduction_started",
+      "detail": "edge worker đã chạy trên :8093, rule safe đang sống, lưu lượng đang chảy",
+      "source": "driver"
+    },
+    {
+      "ts": "2026-06-15T09:58:36.505737+00:00",
+      "event": "baseline_healthy",
+      "detail": "cùng payload được kiểm tra với p99=31.0ms (rule safe)",
+      "source": "synthetic-monitor"
+    },
+    {
+      "ts": "2026-06-15T09:58:36.533262+00:00",
+      "event": "ruleset_deployed",
+      "detail": "WAF managed-ruleset bị hot-swap sang v-vulnerable TOÀN CẦU (regex lồng lượng từ); lưu lượng không đổi",
+      "source": "deploy-log"
+    },
+    {
+      "ts": "2026-06-15T09:58:45.714673+00:00",
+      "event": "worker_unresponsive",
+      "detail": "/healthz (không regex) mất 9145ms -- worker đứng hình vì GIL bị match backtracking giữ",
+      "source": "synthetic-monitor"
+    },
+    {
+      "ts": "2026-06-15T09:58:45.716724+00:00",
+      "event": "cpu_saturated",
+      "detail": "CPU tiến trình waf-engine 96% (>85%); 100% == một core bị ghim hoàn toàn (regex giữ GIL)",
+      "source": "node-exporter"
+    },
+    {
+      "ts": "2026-06-15T09:58:45.820698+00:00",
+      "event": "first_symptom_latency",
+      "detail": "độ trễ request edge-http-proxy p99=9154ms vượt SLO 1000ms (cùng payload với baseline)",
+      "source": "synthetic-monitor"
+    },
+    {
+      "ts": "2026-06-15T09:58:45.820888+00:00",
+      "event": "alerts_fired",
+      "detail": "detector kích hoạt: waf-engine cpu_pct + edge-http-proxy latency_p99_ms (+ cdn/dns mô hình hoá theo bán kính ảnh hưởng). Alert chuyển cho pipeline AIOps",
+      "source": "pipeline-alerting"
+    },
+    {
+      "ts": "2026-06-15T09:58:47.321460+00:00",
+      "event": "oncall_ack",
+      "detail": "on-call đã xác nhận (ack) trang gọi",
+      "source": "pager"
+    },
+    {
+      "ts": "2026-06-15T09:58:49.322385+00:00",
+      "event": "root_cause_identified",
+      "detail": "người ứng phó nối cú tăng CPU với lần deploy ruleset v-vulnerable (sự kiện timeline 'ruleset_deployed') -- mối liên hệ mà pipeline KHÔNG cung cấp",
+      "source": "responder"
+    },
+    {
+      "ts": "2026-06-15T09:58:50.350618+00:00",
+      "event": "mitigation_applied",
+      "detail": "managed ruleset được rollback về v-safe TOÀN CẦU (kill-switch); data plane đang hồi phục",
+      "source": "responder"
+    },
+    {
+      "ts": "2026-06-15T09:58:51.953958+00:00",
+      "event": "full_recovery",
+      "detail": "độ trễ p99 edge-http-proxy trở lại 34.4ms, CPU bình thường",
+      "source": "synthetic-monitor"
+    }
+  ]
+}

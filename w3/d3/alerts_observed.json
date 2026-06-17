@@ -1,0 +1,57 @@
+{
+  "alerts": [
+    {
+      "id": "alrt-1",
+      "ts": "2026-06-15T09:58:45.820888+00:00",
+      "service": "waf-engine",
+      "metric": "cpu_pct",
+      "severity": "crit",
+      "value": 96.2,
+      "threshold": 85,
+      "labels": {
+        "region": "global",
+        "rule_version": "v-vulnerable"
+      },
+      "_source": "measured"
+    },
+    {
+      "id": "alrt-2",
+      "ts": "2026-06-15T09:58:45.820888+00:00",
+      "service": "edge-http-proxy",
+      "metric": "latency_p99_ms",
+      "severity": "crit",
+      "value": 9154.2,
+      "threshold": 1000,
+      "labels": {
+        "region": "global"
+      },
+      "_source": "measured"
+    },
+    {
+      "id": "alrt-3",
+      "ts": "2026-06-15T09:58:45.820888+00:00",
+      "service": "cdn-cache",
+      "metric": "error_rate",
+      "severity": "error",
+      "value": 0.11,
+      "threshold": 0.02,
+      "labels": {
+        "region": "global"
+      },
+      "_source": "modeled-blast-radius"
+    },
+    {
+      "id": "alrt-4",
+      "ts": "2026-06-15T09:58:45.820888+00:00",
+      "service": "dns-frontend",
+      "metric": "latency_p99_ms",
+      "severity": "warn",
+      "value": 460.0,
+      "threshold": 300,
+      "labels": {
+        "region": "global"
+      },
+      "_source": "modeled-blast-radius"
+    }
+  ]
+}

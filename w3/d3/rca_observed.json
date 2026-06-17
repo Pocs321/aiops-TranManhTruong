@@ -1,0 +1,85 @@
+{
+  "pipeline": {
+    "modules": "w2/d3 correlate.py + rca.py (thật)",
+    "topology": "reproduction/topology.json (edge)",
+    "config": {
+      "gap_sec": 120,
+      "max_hop": 2,
+      "llm": "tắt (không có key)"
+    }
+  },
+  "input_alert_services": [
+    "cdn-cache",
+    "dns-frontend",
+    "edge-http-proxy",
+    "waf-engine"
+  ],
+  "clusters": [
+    {
+      "cluster_id": "clu-001",
+      "alert_count": 4,
+      "services": [
+        "cdn-cache",
+        "dns-frontend",
+        "edge-http-proxy",
+        "waf-engine"
+      ],
+      "time_range": [
+        "2026-06-15T09:58:45.820888+00:00",
+        "2026-06-15T09:58:45.820888+00:00"
+      ]
+    }
+  ],
+  "root_cause": {
+    "service": "waf-engine",
+    "confidence": 0.515,
+    "reasoning": "waf-engine is the most depended-on service among the 4 alerting services (cdn-cache, dns-frontend, edge-http-proxy); graph topology + severity rank it highest.",
+    "method": "graph"
+  },
+  "candidates": [
+    [
+      "waf-engine",
+      0.515
+    ],
+    [
+      "edge-http-proxy",
+      0.338
+    ],
+    [
+      "cdn-cache",
+      0.088
+    ],
+    [
+      "dns-frontend",
+      0.059
+    ]
+  ],
+  "recommended_actions": [
+    "Mở rộng bộ nhớ cdn-cache",
+    "Làm nóng trước các object nóng",
+    "Inspect waf-engine dashboards and recent deploys",
+    "Check waf-engine downstream dependencies for saturation"
+  ],
+  "similar_incidents": [
+    {
+      "id": "INC-2026-02-11",
+      "similarity": 0.7,
+      "summary": "cdn-cache chạm maxmemory và trục xuất các object nóng; lượt fetch origin qua edge-http-proxy tăng vọt. Khắc phục bằng cách mở rộng bộ nhớ cache."
+    },
+    {
+      "id": "INC-2026-04-03",
+      "similarity": 0.7,
+      "summary": "Độ trễ resolver của dns-frontend tăng sau một thay đổi resolver thượng nguồn; độ trễ byte-đầu-tiên tại edge tăng theo."
+    }
+  ],
+  "expected_vs_observed": {
+    "actual_root_cause": "Nội dung của WAF managed-rule v-vulnerable (regex catastrophic-backtracking), đẩy toàn cầu",
+    "pipeline_root_cause": "waf-engine",
+    "localized_pegged_component": true,
+    "named_the_offending_artifact": false,
+    "trigger_change_event_in_pipeline_inputs": false,
+    "trigger_present_in_timeline_only": true,
+    "similar_incidents_mechanism_match": false
+  },
+  "dien_giai_vi": "Pipeline khoanh đúng thành phần bị nghẽn ('waf-engine', confidence 0.515) bằng topology + severity, NHƯNG không gọi được tên nguyên nhân: yếu tố kích hoạt là sự kiện thay đổi ('ruleset_deployed') chỉ có trong timeline.json, không bao giờ là input. Hai action đầu lấy từ một sự cố quá khứ TRÙNG DỊCH VỤ nhưng SAI cơ chế (cache eviction). reasoning và 2 action chung giữ nguyên tiếng Anh vì do pipeline w2/d3 sinh ra."
+}
