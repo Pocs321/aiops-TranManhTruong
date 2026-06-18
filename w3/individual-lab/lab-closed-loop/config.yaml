@@ -1,0 +1,62 @@
+# Orchestrator configuration — closed_loop.py reads this at startup.
+
+alertmanager_url: "http://localhost:9093"
+# Default lab port. On a host where 9090 is occupied, remap the Prometheus
+# container (e.g. 9190:9090) and set this to http://localhost:9190 — see README.md.
+prometheus_url: "http://localhost:9090"
+poll_interval_seconds: 15
+runbook_timeout_seconds: 30
+
+# Path from this config file to the baseline JSON (self-contained copy in this folder)
+baseline_path: "data/baseline.json"
+
+# Runbook map: alertname → script path (relative to this config file)
+runbook_map:
+  HighLatency:   "runbooks/restart_service.sh"
+  HighErrorRate: "runbooks/clear_cache.sh"
+  InstanceDown:  "runbooks/restart_service.sh"
+  TestHallucination: "runbooks/nonexistent_runbook.sh"   # S6: intentionally NOT in registry
+  MultiStepDeploy: "runbooks/step_a.sh"                   # S4: entry runbook (steps in multi_step_map)
+
+# Decision validation allowlist (S6). Only these runbooks may be executed;
+# anything else (e.g. a hallucinated name) is rejected before any subprocess.
+runbook_registry:
+  - "runbooks/restart_service.sh"
+  - "runbooks/clear_cache.sh"
+  - "runbooks/scale_replicas.sh"
+  - "runbooks/step_a.sh"
+  - "runbooks/step_b.sh"
+  - "runbooks/step_c.sh"
+  - "runbooks/rollback_a.sh"
+  - "runbooks/rollback_b.sh"
+
+# S4: multi-step transactional deploy (A→B→C). Step C fails → rollback B then A.
+multi_step_map:
+  MultiStepDeploy:
+    - "runbooks/step_a.sh"
+    - "runbooks/step_b.sh"
+    - "runbooks/step_c.sh"
+# Rollback scripts parallel to the forward steps (a undoes A, b undoes B).
+# Orchestrator runs reversed(rollback[:completed]) → rollback_b then rollback_a.
+multi_step_rollback_map:
+  MultiStepDeploy:
+    - "runbooks/rollback_a.sh"
+    - "runbooks/rollback_b.sh"
+
+# Rollback map: alertname → rollback script (defaults to same as runbook if absent)
+rollback_map:
+  HighLatency:   "runbooks/restart_service.sh"
+  HighErrorRate: "runbooks/restart_service.sh"
+  InstanceDown:  "runbooks/restart_service.sh"
+
+blast_radius:
+  # Maximum total actions fired across all services per minute
+  max_actions_per_minute: 3
+  # Maximum restart actions per individual service per hour
+  max_restarts_per_service_per_hour: 5
+
+circuit_breaker:
+  # Halt automation after this many consecutive verify failures
+  consecutive_failure_threshold: 3
+  # reset_mode: "manual" — operator must restart the process to reset
+  reset_mode: manual
